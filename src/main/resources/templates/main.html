@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .main-container {
+            width: 80%;
+            max-width: 600px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header a {
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: #fff;
+            background-color: #4caf50;
+            transition: background-color 0.3s ease;
+        }
+        .header a:hover {
+            background-color: #45a049;
+        }
+        .content {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    <div class="header">
+        <a href="#">Выйти</a>
+        <div>
+            <a href="#">Главная</a>
+            <a href="#">Реестры</a>
+            <a href="#">Отчеты</a>
+        </div>
+    </div>
+    <div class="content">
+        <h2>Добро пожаловать на главную страницу</h2>
+        <p>Здесь может быть ваш контент.</p>
+    </div>
+</div>
+</body>
+</html>

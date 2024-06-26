@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,6 +45,9 @@
             background-color: #f9f9f9;
             border-radius: 5px;
         }
+        .user-data {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -60,6 +63,11 @@
     <div class="content">
         <h2>Добро пожаловать на главную страницу</h2>
         <p>Здесь может быть ваш контент.</p>
+        <div class="user-data">
+            <p>id: <span th:text="${user.id}"></span></p>
+            <p>Логин: <span th:text="${user.username}"></span></p>
+            <p>Пароль: <span th:text="${user.password}"></span></p>
+        </div>
     </div>
 </div>
 </body>

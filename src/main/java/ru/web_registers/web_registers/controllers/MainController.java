@@ -1,5 +1,9 @@
 package ru.web_registers.web_registers.controllers;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -7,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.web_registers.web_registers.model.User;
 import ru.web_registers.web_registers.repository.UserRepository;
+
+import java.io.IOException;
 
 @Controller
 public class MainController {
@@ -30,5 +36,21 @@ public class MainController {
         model.addAttribute("user", user);
 
         return "main";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Завершаем сессию и очищаем контекст безопасности
+        request.logout();
+        SecurityContextHolder.clearContext();
+
+        // Удаляем все куки
+        for (Cookie cookie : request.getCookies()) {
+             cookie.setMaxAge(0);
+             cookie.setPath("/");
+             response.addCookie(cookie);
+        }
+
+        return "redirect:/login";
     }
 }

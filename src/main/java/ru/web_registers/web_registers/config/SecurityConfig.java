@@ -36,7 +36,7 @@ public class SecurityConfig {
             }
             return org.springframework.security.core.userdetails.User.builder()
                     .username(user.getUsername())
-                    .password(passwordEncoder().encode(user.getPassword())) // Кодируем пароль здесь
+                    .password(passwordEncoder().encode(user.getPassword()))
                     .roles("USER") // Установка ролей, если нужно
                     .build();
         };
@@ -46,6 +46,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/main", true).permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID"))
                 .authorizeHttpRequests(auth->auth.anyRequest().authenticated())
                 .build();
     }

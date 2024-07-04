@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import ru.web_registers.web_registers.model.User;
 import ru.web_registers.web_registers.repository.UserRepository;
 
@@ -37,9 +38,19 @@ public class SecurityConfig {
             return org.springframework.security.core.userdetails.User.builder()
                     .username(user.getUsername())
                     .password(passwordEncoder().encode(user.getPassword()))
-                    .roles("USER") // Установка ролей, если нужно
+                    .roles(user.getRole().getName())
                     .build();
         };
+    }
+
+    @Transactional(readOnly = true)
+    public User loadUserByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            // Ensure the role is loaded
+            user.getRole().getName();
+        }
+        return user;
     }
 
     @Bean
@@ -51,7 +62,9 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID"))
-                .authorizeHttpRequests(auth->auth.anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/admin/**").hasRole("admin")
+                        .anyRequest().authenticated())
                 .build();
     }
 }

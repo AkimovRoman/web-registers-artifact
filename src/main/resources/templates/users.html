@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пользователи</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .main-container {
+            width: 80%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header a {
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: #fff;
+            background-color: #4caf50;
+            transition: background-color 0.3s ease;
+        }
+        .header a:hover {
+            background-color: #45a049;
+        }
+        .content {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            cursor: pointer;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr.selected {
+            background-color: #f0f0f0;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+        }
+        .buttons button.add {
+            background-color: #4caf50;
+        }
+        .buttons button.edit {
+            background-color: #2196f3;
+        }
+        .buttons button.delete {
+            background-color: #f44336;
+        }
+        .buttons button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    <div class="header">
+        <a href="#" th:href="@{/logout}">Выйти</a>
+        <div>
+            <a href="#" th:href="@{/main}">Главная</a>
+            <a href="#">Реестры</a>
+            <a href="#">Отчеты</a>
+            <a href="#" th:href="@{/admin/users}" th:if="${user.role.name == 'admin'}">Пользователи</a>
+        </div>
+    </div>
+    <div class="content">
+        <h1>Список пользователей</h1>
+        <table id="usersTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Логин</th>
+                <th>Роль</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${allUsers}" th:data-user-id="${user.id}">
+                <td th:text="${user.id}">1</td>
+                <td th:text="${user.username}">admin</td>
+                <td th:text="${user.role.name}">admin</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="buttons">
+            <button class="add" onclick="addUser()">Добавить</button>
+            <button class="edit" id="editBtn" onclick="editUser()" disabled>Редактировать</button>
+            <button class="delete" id="deleteBtn" onclick="deleteUser()" disabled>Удалить</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedUserId = null;
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const table = document.getElementById('usersTable');
+        const rows = table.querySelectorAll('tbody tr');
+
+        rows.forEach(row => {
+            row.addEventListener('click', () => {
+                rows.forEach(r => r.classList.remove('selected'));
+                row.classList.add('selected');
+                selectedUserId = row.getAttribute('data-user-id');
+                document.getElementById('editBtn').disabled = false;
+                document.getElementById('deleteBtn').disabled = false;
+            });
+        });
+    });
+
+    function addUser() {
+        alert('Добавить пользователя');
+        // Будущий код для добавления пользователя
+    }
+
+    function editUser() {
+        if (selectedUserId) {
+            alert(`Редактировать пользователя с ID: ${selectedUserId}`);
+            // Будущий код для редактирования пользователя
+        }
+    }
+
+    function deleteUser() {
+        if (selectedUserId) {
+            alert(`Удалить пользователя с ID: ${selectedUserId}`);
+            // Будущий код для удаления пользователя
+        }
+    }
+</script>
+</body>
+</html>

@@ -55,9 +55,10 @@
     <div class="header">
         <a href="#" th:href="@{/logout}">Выйти</a>
         <div>
-            <a href="#">Главная</a>
+            <a href="#" th:href="@{/main}">Главная</a>
             <a href="#">Реестры</a>
             <a href="#">Отчеты</a>
+            <a href="#" th:href="@{/admin/users}" th:if="${user.role.name == 'admin'}">Пользователи</a>
         </div>
     </div>
     <div class="content">

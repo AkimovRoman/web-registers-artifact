@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.web_registers.web_registers.model.User;
 import ru.web_registers.web_registers.repository.UserRepository;
+import java.util.List;
 
 import java.io.IOException;
 
@@ -31,6 +32,12 @@ public class MainController {
 
         // Находим пользователя в базе данных
         User user = userRepository.findByUsername(currentUsername);
+
+        // Проверяем роль пользователя
+        if (user.getRole().getName().equals("admin")) {
+            List<User> allUsers = userRepository.findAll();
+            model.addAttribute("allUsers", allUsers);
+        }
 
         // Передаем данные пользователя в модель
         model.addAttribute("user", user);

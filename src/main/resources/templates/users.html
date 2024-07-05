@@ -3,25 +3,32 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Пользователи</title>
+    <title>Административная панель</title>
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            justify-content: flex-start;
+            align-items: flex-start;
         }
         .main-container {
-            width: 80%;
-            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
         }
         .header {
             display: flex;
@@ -34,21 +41,42 @@
             padding: 10px 15px;
             border-radius: 5px;
             color: #fff;
-            background-color: #4caf50;
             transition: background-color 0.3s ease;
+            margin-right: 10px;
         }
-        .header a:hover {
+        .header .logout {
+            background-color: #f44336;
+        }
+        .header .logout:hover {
+            background-color: #e53935;
+        }
+        .header .nav a {
+            background-color: #4caf50;
+        }
+        .header .nav a:hover {
             background-color: #45a049;
         }
+        .content-wrapper {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-grow: 1;
+            overflow: hidden;
+        }
         .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             padding: 20px;
             background-color: #f9f9f9;
             border-radius: 5px;
+            overflow: hidden;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             cursor: pointer;
+            overflow: auto;
         }
         table, th, td {
             border: 1px solid #ddd;
@@ -88,79 +116,144 @@
             background-color: #cccccc;
             cursor: not-allowed;
         }
+        .table-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 <div class="main-container">
     <div class="header">
-        <a href="#" th:href="@{/logout}">Выйти</a>
-        <div>
+        <div class="nav">
             <a href="#" th:href="@{/main}">Главная</a>
             <a href="#">Реестры</a>
             <a href="#">Отчеты</a>
             <a href="#" th:href="@{/admin/users}" th:if="${user.role.name == 'admin'}">Пользователи</a>
         </div>
+        <a href="#" th:href="@{/logout}" class="logout">Выйти</a>
     </div>
-    <div class="content">
-        <h1>Список пользователей</h1>
-        <table id="usersTable">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Логин</th>
-                <th>Роль</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="user : ${allUsers}" th:data-user-id="${user.id}">
-                <td th:text="${user.id}">1</td>
-                <td th:text="${user.username}">admin</td>
-                <td th:text="${user.role.name}">admin</td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="buttons">
-            <button class="add" onclick="addUser()">Добавить</button>
-            <button class="edit" id="editBtn" onclick="editUser()" disabled>Редактировать</button>
-            <button class="delete" id="deleteBtn" onclick="deleteUser()" disabled>Удалить</button>
+    <div class="content-wrapper">
+        <div class="content">
+            <h2>Список пользователей</h2>
+            <div class="table-wrapper">
+                <table id="usersTable">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Логин</th>
+                        <th>Роль</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${allUsers}" th:data-user-id="${user.id}">
+                        <td th:text="${user.id}">1</td>
+                        <td th:text="${user.username}">admin</td>
+                        <td th:text="${user.role.name}">admin</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="buttons">
+                <button class="add" onclick="addUser()">Добавить</button>
+                <button class="edit" id="editBtn" onclick="editUser()" disabled>Редактировать</button>
+                <button class="delete" id="deleteBtn" onclick="deleteUser()" disabled>Удалить</button>
+            </div>
+        </div>
+        <div class="content">
+            <h2>Список ролей</h2>
+            <div class="table-wrapper">
+                <table id="rolesTable">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Название</th>
+                        <th>Описание</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="role : ${allRoles}" th:data-role-id="${role.id}">
+                        <td th:text="${role.id}">1</td>
+                        <td th:text="${role.name}">admin</td>
+                        <td th:text="${role.description}">Администратор</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="buttons">
+                <button class="add" onclick="addRole()">Добавить</button>
+                <button class="edit" id="editRoleBtn" onclick="editRole()" disabled>Редактировать</button>
+                <button class="delete" id="deleteRoleBtn" onclick="deleteRole()" disabled>Удалить</button>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
     let selectedUserId = null;
+    let selectedRoleId = null;
 
     document.addEventListener('DOMContentLoaded', (event) => {
-        const table = document.getElementById('usersTable');
-        const rows = table.querySelectorAll('tbody tr');
+        const usersTable = document.getElementById('usersTable');
+        const rolesTable = document.getElementById('rolesTable');
 
-        rows.forEach(row => {
+        usersTable.querySelectorAll('tbody tr').forEach(row => {
             row.addEventListener('click', () => {
-                rows.forEach(r => r.classList.remove('selected'));
+                usersTable.querySelectorAll('tbody tr').forEach(r => r.classList.remove('selected'));
                 row.classList.add('selected');
                 selectedUserId = row.getAttribute('data-user-id');
                 document.getElementById('editBtn').disabled = false;
                 document.getElementById('deleteBtn').disabled = false;
             });
         });
+
+        rolesTable.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('click', () => {
+                rolesTable.querySelectorAll('tbody tr').forEach(r => r.classList.remove('selected'));
+                row.classList.add('selected');
+                selectedRoleId = row.getAttribute('data-role-id');
+                document.getElementById('editRoleBtn').disabled = false;
+                document.getElementById('deleteRoleBtn').disabled = false;
+            });
+        });
     });
 
     function addUser() {
         alert('Добавить пользователя');
-        // Будущий код для добавления пользователя
+        // Код для добавления пользователя
     }
 
     function editUser() {
         if (selectedUserId) {
             alert(`Редактировать пользователя с ID: ${selectedUserId}`);
-            // Будущий код для редактирования пользователя
+            // Код для редактирования пользователя
         }
     }
 
     function deleteUser() {
         if (selectedUserId) {
             alert(`Удалить пользователя с ID: ${selectedUserId}`);
-            // Будущий код для удаления пользователя
+            // Код для удаления пользователя
+        }
+    }
+
+    function addRole() {
+        alert('Добавить роль');
+        // Код для добавления роли
+    }
+
+    function editRole() {
+        if (selectedRoleId) {
+            alert(`Редактировать роль с ID: ${selectedRoleId}`);
+            // Код для редактирования роли
+        }
+    }
+
+    function deleteRole() {
+        if (selectedRoleId) {
+            alert(`Удалить роль с ID: ${selectedRoleId}`);
+            // Код для удаления роли
         }
     }
 </script>

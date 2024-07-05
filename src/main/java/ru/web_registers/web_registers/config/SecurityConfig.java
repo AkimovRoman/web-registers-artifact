@@ -47,7 +47,6 @@ public class SecurityConfig {
     public User loadUserByUsername(String username) {
         User user = userRepository.findByUsername(username);
         if (user != null) {
-            // Ensure the role is loaded
             user.getRole().getName();
         }
         return user;

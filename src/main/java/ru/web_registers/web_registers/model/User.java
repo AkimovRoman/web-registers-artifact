@@ -19,7 +19,6 @@ public class User {
     @JoinColumn(name = "role_id")
     private Role role;
 
-    // геттеры и сеттеры
     public Long getId() {
         return id;
     }

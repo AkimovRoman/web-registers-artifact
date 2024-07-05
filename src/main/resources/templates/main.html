@@ -11,17 +11,15 @@
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: flex-start;
+            align-items: flex-start;
             height: 100vh;
         }
         .main-container {
-            width: 80%;
-            max-width: 600px;
+            width: 100%;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .header {
             display: flex;
@@ -34,10 +32,19 @@
             padding: 10px 15px;
             border-radius: 5px;
             color: #fff;
-            background-color: #4caf50;
             transition: background-color 0.3s ease;
+            margin-right: 10px;
         }
-        .header a:hover {
+        .header .logout {
+            background-color: #f44336;
+        }
+        .header .logout:hover {
+            background-color: #e53935;
+        }
+        .header .nav a {
+            background-color: #4caf50;
+        }
+        .header .nav a:hover {
             background-color: #45a049;
         }
         .content {
@@ -53,13 +60,13 @@
 <body>
 <div class="main-container">
     <div class="header">
-        <a href="#" th:href="@{/logout}">Выйти</a>
-        <div>
+        <div class="nav">
             <a href="#" th:href="@{/main}">Главная</a>
             <a href="#">Реестры</a>
             <a href="#">Отчеты</a>
             <a href="#" th:href="@{/admin/users}" th:if="${user.role.name == 'admin'}">Пользователи</a>
         </div>
+        <a href="#" th:href="@{/logout}" class="logout">Выйти</a>
     </div>
     <div class="content">
         <h2>Добро пожаловать на главную страницу</h2>

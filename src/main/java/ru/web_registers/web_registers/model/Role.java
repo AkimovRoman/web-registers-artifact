@@ -1,7 +1,6 @@
 package ru.web_registers.web_registers.model;
 
 import jakarta.persistence.*;
-
 import java.util.Set;
 
 @Entity
@@ -14,10 +13,12 @@ public class Role {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column
+    private String description;
+
     @OneToMany(mappedBy = "role")
     private Set<User> users;
 
-    // геттеры и сеттеры
     public Long getId() {
         return id;
     }
@@ -32,6 +33,14 @@ public class Role {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Set<User> getUsers() {

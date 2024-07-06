@@ -121,6 +121,83 @@
             overflow-y: auto;
             margin-top: 10px;
         }
+        /* Всплывающее окно */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal h2 {
+            margin-top: 0;
+        }
+
+        .modal label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        .modal input, .modal select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .modal button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -143,14 +220,16 @@
                     <tr>
                         <th>ID</th>
                         <th>Логин</th>
+                        <th>Пароль</th>
                         <th>Роль</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="user : ${allUsers}" th:data-user-id="${user.id}">
                         <td th:text="${user.id}">1</td>
-                        <td th:text="${user.username}">admin</td>
-                        <td th:text="${user.role.name}">admin</td>
+                        <td th:text="${user.username}"></td>
+                        <td th:text="${user.password}"></td>
+                        <td th:text="${user.role.name}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -174,9 +253,9 @@
                     </thead>
                     <tbody>
                     <tr th:each="role : ${allRoles}" th:data-role-id="${role.id}">
-                        <td th:text="${role.id}">1</td>
-                        <td th:text="${role.name}">admin</td>
-                        <td th:text="${role.description}">Администратор</td>
+                        <td th:text="${role.id}"></td>
+                        <td th:text="${role.name}"></td>
+                        <td th:text="${role.description}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -188,6 +267,102 @@
             </div>
         </div>
     </div>
+    <!-- Модальные окна -->
+    <!-- Модальное окно для добавления роли -->
+    <div id="addRoleModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addRoleModal')">&times;</span>
+            <form id="addRoleForm" th:action="@{/admin/addRole}" method="post">
+                <h2>Добавить роль</h2>
+                <label for="roleName">Название:</label>
+                <input type="text" id="roleName" name="name" required maxlength="255"><br><br>
+                <label for="roleDescription">Описание:</label>
+                <input type="text" id="roleDescription" name="description" required maxlength="255"><br><br>
+                <button type="submit">Добавить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для редактирования роли -->
+    <div id="editRoleModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editRoleModal')">&times;</span>
+            <form id="editRoleForm" th:action="@{/admin/editRole}" method="post">
+                <h2>Редактировать роль</h2>
+                <input type="hidden" id="editRoleId" name="id">
+                <label for="editRoleName">Название:</label>
+                <input type="text" id="editRoleName" name="name" required maxlength="255"><br><br>
+                <label for="editRoleDescription">Описание:</label>
+                <input type="text" id="editRoleDescription" name="description" required maxlength="255"><br><br>
+                <button type="submit">Сохранить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для добавления пользователя -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addUserModal')">&times;</span>
+            <form id="addUserForm" th:action="@{/admin/addUser}" method="post">
+                <h2>Добавить пользователя</h2>
+                <label for="userName">Логин:</label>
+                <input type="text" id="userName" name="username" required maxlength="255"><br><br>
+                <label for="userPassword">Пароль:</label>
+                <input type="password" id="userPassword" name="password" required maxlength="255"><br><br>
+                <label for="userRole">Роль:</label>
+                <select id="userRole" name="role">
+                    <option th:each="role : ${allRoles}" th:value="${role.id}" th:text="${role.name}"></option>
+                </select><br><br>
+                <button type="submit">Добавить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для редактирования пользователя -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editUserModal')">&times;</span>
+            <form id="editUserForm" th:action="@{/admin/editUser}" method="post">
+                <h2>Редактировать пользователя</h2>
+                <input type="hidden" id="editUserId" name="id">
+                <label for="editUserName">Логин:</label>
+                <input type="text" id="editUserName" name="username" required maxlength="255"><br><br>
+                <label for="editUserPassword">Пароль:</label>
+                <input type="password" id="editUserPassword" name="password" maxlength="255"><br><br>
+                <label for="editUserRole">Роль:</label>
+                <select id="editUserRole" name="role">
+                    <option th:each="role : ${allRoles}" th:value="${role.id}" th:text="${role.name}"></option>
+                </select><br><br>
+                <button type="submit">Сохранить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для удаления пользователя -->
+    <div id="deleteUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('deleteUserModal')">&times;</span>
+            <form id="deleteUserForm" th:action="@{/admin/deleteUser}" method="post">
+                <h2>Удалить пользователя</h2>
+                <input type="hidden" id="deleteUserId" name="id">
+                <p>Вы уверены, что хотите удалить пользователя?</p>
+                <button type="submit">Удалить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для удаления роли -->
+    <div id="deleteRoleModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('deleteRoleModal')">&times;</span>
+            <form id="deleteRoleForm" th:action="@{/admin/deleteRole}" method="post">
+                <h2>Удалить роль</h2>
+                <input type="hidden" id="deleteRoleId" name="id">
+                <p>Вы уверены, что хотите удалить роль?</p>
+                <button type="submit">Удалить</button>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -197,6 +372,10 @@
     document.addEventListener('DOMContentLoaded', (event) => {
         const usersTable = document.getElementById('usersTable');
         const rolesTable = document.getElementById('rolesTable');
+
+        // Сортировка таблиц по ID
+        sortTable(usersTable, 0);
+        sortTable(rolesTable, 0);
 
         usersTable.querySelectorAll('tbody tr').forEach(row => {
             row.addEventListener('click', () => {
@@ -220,41 +399,84 @@
     });
 
     function addUser() {
-        alert('Добавить пользователя');
-        // Код для добавления пользователя
+        openModal('addUserModal');
     }
 
     function editUser() {
         if (selectedUserId) {
-            alert(`Редактировать пользователя с ID: ${selectedUserId}`);
-            // Код для редактирования пользователя
+            const userRow = document.querySelector(`#usersTable tr[data-user-id="${selectedUserId}"]`);
+            document.getElementById('editUserId').value = selectedUserId;
+            document.getElementById('editUserName').value = userRow.cells[1].innerText;
+            document.getElementById('editUserPassword').value = userRow.cells[2].innerText;
+
+            const userRole = userRow.cells[3].innerText;
+            const roleOptions = document.getElementById('editUserRole').options;
+            for (let option of roleOptions) {
+                if (option.text === userRole) {
+                    option.selected = true;
+                    break;
+                }
+            }
+
+            openModal('editUserModal');
         }
     }
 
     function deleteUser() {
         if (selectedUserId) {
-            alert(`Удалить пользователя с ID: ${selectedUserId}`);
-            // Код для удаления пользователя
+            document.getElementById('deleteUserId').value = selectedUserId;
+            openModal('deleteUserModal');
         }
     }
 
     function addRole() {
-        alert('Добавить роль');
-        // Код для добавления роли
+        openModal('addRoleModal');
     }
 
     function editRole() {
         if (selectedRoleId) {
-            alert(`Редактировать роль с ID: ${selectedRoleId}`);
-            // Код для редактирования роли
+            const roleRow = document.querySelector(`#rolesTable tr[data-role-id="${selectedRoleId}"]`);
+            document.getElementById('editRoleId').value = selectedRoleId;
+            document.getElementById('editRoleName').value = roleRow.cells[1].innerText;
+            document.getElementById('editRoleDescription').value = roleRow.cells[2].innerText;
+            openModal('editRoleModal');
         }
     }
 
     function deleteRole() {
         if (selectedRoleId) {
-            alert(`Удалить роль с ID: ${selectedRoleId}`);
-            // Код для удаления роли
+            document.getElementById('deleteRoleId').value = selectedRoleId;
+            openModal('deleteRoleModal');
         }
+    }
+
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Закрытие модального окна при клике вне его
+    window.onclick = function(event) {
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        });
+    }
+
+    // Функция для сортировки таблицы по столбцу
+    function sortTable(table, column) {
+        const rows = Array.from(table.querySelector('tbody').rows);
+        rows.sort((rowA, rowB) => {
+            const cellA = rowA.cells[column].innerText;
+            const cellB = rowB.cells[column].innerText;
+            return parseInt(cellA) - parseInt(cellB);
+        });
+        rows.forEach(row => table.querySelector('tbody').appendChild(row));
     }
 </script>
 </body>
